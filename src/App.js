@@ -1,83 +1,48 @@
+import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { useState } from "react";
+import SixNumber from "./containers/SixNumber";
+import BusChecker from "./containers/BusChecker";
+import CarparkInfo from "./containers/CarparkInfo"
+
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 function App() {
-  const [results, setResults] = useState([]);
-  const [times, setTimes] = useState(10);
+  const [currentPage, setCurrentPage] = useState("CarparkInfo");
+  
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
 
-  const generateResult = async () => {
-    console.log(times);
-    let randomArr = await Promise.all(
-      [...Array(parseInt(times))].map((el) => {
-        return generate6number();
-      })
-    );
-    console.log("randomArr", randomArr);
-
-    const selection = parseInt(times * Math.random());
-    const random = randomArr[selection];
-
-    if (validation(random)) {
-      // retry
-      generateResult();
-    } else {
-      setResults([...results, random]);
-    }
-  };
-
-  const generate6number = async () => {
-    return [...Array(6)]
-      .map((el) => {
-        return Math.round(49 * Math.random()).toLocaleString("en-US", {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
-        });
-      })
-      .sort((a, b) => (a > b ? 1 : -1));
-  };
-
-  const remove = (ind) => {
-    if (ind > -1) {
-      const temp = [...results];
-      temp.splice(ind, 1);
-      setResults(temp);
-    }
-  };
-
-  function validation(arr) {
-    return new Set(arr).size !== arr.length;
+  const selectPage = (page)=>{
+    setCurrentPage(page)
   }
 
-  const handleChange = (event) => {
-    setTimes(event.target.value);
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <TextField id="outlined-basic" variant="outlined" onChange={handleChange} value={times} color="success"/>
-        <Button variant="contained" onClick={() => generateResult()}>
-          Generate
-        </Button>
-        {results && (
-          <div style={{ whiteSpace: "pre-line" }}>
-            {results.map((el, ind) => {
-              return (
-                <div>
-                  {`${el}`}
-                  <Button variant="contained" onClick={() => remove(ind)}>
-                    x
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </header>
-    </div>
+    <ThemeProvider theme={darkTheme}>
+      <div className="App">
+        <AppBar position="static">
+          <Container maxWidth="xl">
+            <Toolbar disableGutters>
+              <Button color="inherit" onClick={()=>selectPage("SixNumber")}>SixNumber</Button>
+              <Button color="inherit" onClick={()=>selectPage("BusChecker")}>BusChecker</Button>
+              <Button color="inherit" onClick={()=>selectPage("CarparkInfo")}>CarparkInfo</Button>
+            </Toolbar>
+          </Container>
+        </AppBar>
+        <div className="Main">
+          {currentPage === "SixNumber" && <SixNumber />}
+          {currentPage === "BusChecker" && <BusChecker />}
+          {currentPage === "CarparkInfo"&&<CarparkInfo/>}
+        </div>
+      </div>
+    </ThemeProvider>
   );
 }
 
