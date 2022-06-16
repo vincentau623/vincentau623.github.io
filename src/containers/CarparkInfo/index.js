@@ -5,6 +5,7 @@ import LeafletMap from "../../components/LeafeltMap";
 
 import { getCarParkSlot, getCarParkInfo, getCarParkIntegrated } from "../../api/carpark";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-markercluster";
 
 const CarparkInfo = () => {
   const [carParkInfo, setCarParkInfo] = useState();
@@ -61,7 +62,7 @@ const CarparkInfo = () => {
         } else {
           resultJsx.push("Car park closed");
         }
-        resultJsx.push(<br></br>)
+        resultJsx.push(<br></br>);
       });
     });
     return resultJsx;
@@ -77,20 +78,22 @@ const CarparkInfo = () => {
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {carParkInfo &&
-            carParkInfo.map((el) => {
-              if (el.latitude && el.longitude) {
-                return (
-                  <Marker position={[el.latitude, el.longitude]}>
-                    <Popup>
-                      <div>{el.name_tc}</div>
-                      <div dangerouslySetInnerHTML={{ __html: el.remark_tc }}></div>
-                      {getVacancy(el.vehicle_type)}
-                    </Popup>
-                  </Marker>
-                );
-              }
-            })}
+          <MarkerClusterGroup disableClusteringAtZoom="16">
+            {carParkInfo &&
+              carParkInfo.map((el) => {
+                if (el.latitude && el.longitude) {
+                  return (
+                    <Marker position={[el.latitude, el.longitude]}>
+                      <Popup>
+                        <div>{el.name_tc}</div>
+                        <div dangerouslySetInnerHTML={{ __html: el.remark_tc }}></div>
+                        {getVacancy(el.vehicle_type)}
+                      </Popup>
+                    </Marker>
+                  );
+                }
+              })}
+          </MarkerClusterGroup>
         </MapContainer>
       </div>
     </div>

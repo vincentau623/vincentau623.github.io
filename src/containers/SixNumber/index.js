@@ -48,21 +48,33 @@ const SixNumber = () => {
   };
 
   function validation(arr) {
-    return new Set(arr).size !== arr.length;
+    const repeated = new Set(arr).size !== arr.length;
+    let outRange = false;
+    arr.forEach((el) => {
+      if(parseInt(el) <= 0) 
+      (outRange = true);
+    });
+    return repeated || outRange;
   }
 
   const handleChange = (event) => {
-      if(event.target.value < 1){
-        setTimes(1);
-      }else{
-        setTimes(event.target.value);
-      }
+    if (event.target.value < 1) {
+      setTimes(1);
+    } else {
+      setTimes(event.target.value);
+    }
   };
 
   return (
     <div>
       <Stack direction="row" spacing={3}>
-        <TextField id="outlined-basic" variant="outlined" onChange={handleChange} value={times} min={0}/>
+        <TextField
+          id="outlined-basic"
+          variant="outlined"
+          onChange={handleChange}
+          value={times}
+          min={0}
+        />
         <Button variant="contained" onClick={() => generateResult()}>
           Generate
         </Button>
