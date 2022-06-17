@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./index.css";
 
-import LeafletMap from "../../components/LeafeltMap";
-
 import { getCarParkSlot, getCarParkInfo, getCarParkIntegrated } from "../../api/carpark";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
