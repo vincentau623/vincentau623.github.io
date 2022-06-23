@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getRouteEta, getRouteList, getRouteStop, getStop } from "../../api/KMB";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, TextField, Stack, Button, Typography } from "@mui/material";
 import moment from "moment";
 
 const QuickBusCheck = () => {
@@ -11,30 +11,31 @@ const QuickBusCheck = () => {
   const [routeEta, setRouteEta] = useState([]);
   const [etaResult, setEtaResult] = useState([]);
 
+  const fetchRouteStop = async () => {
+    const newRouteStops = (
+      await getRouteStop(
+        selectedRoute.route,
+        selectedRoute.bound === "I" ? "inbound" : "outbound",
+        selectedRoute.service_type
+      )
+    ).data;
+    await Promise.all(
+      newRouteStops.map(async (el, index) => {
+        const result = (await getStop(el.stop)).data;
+        return { ...result, seq: index };
+      })
+    ).then((list) => {
+      setRouteStopList(list);
+    });
+  };
+
+  const fetchRouteEta = async () => {
+    console.log("getETA");
+    const newRouteEta = (await getRouteEta(selectedRoute.route, selectedRoute.service_type)).data;
+    setRouteEta(newRouteEta);
+  };
+
   useEffect(() => {
-    const fetchRouteStop = async () => {
-      const newRouteStops = (
-        await getRouteStop(
-          selectedRoute.route,
-          selectedRoute.bound === "I" ? "inbound" : "outbound",
-          selectedRoute.service_type
-        )
-      ).data;
-      await Promise.all(
-        newRouteStops.map(async (el, index) => {
-          const result = (await getStop(el.stop)).data;
-          return { ...result, seq: index };
-        })
-      ).then((list) => {
-        setRouteStopList(list);
-      });
-    };
-
-    const fetchRouteEta = async () => {
-      const newRouteEta = (await getRouteEta(selectedRoute.route, selectedRoute.service_type)).data;
-      setRouteEta(newRouteEta);
-    };
-
     if (selectedRoute) {
       fetchRouteStop();
       fetchRouteEta();
@@ -44,7 +45,9 @@ const QuickBusCheck = () => {
   useEffect(() => {
     const lastStop = localStorage.getItem("lastRouteStop");
     if (lastStop && routeStopList.length > 0) {
-      setSelectedRouteStop(routeStopList.find((el) => `${el.seq}` === `${lastStop}`));
+      setSelectedRouteStop(
+        routeStopList.find((el) => `${el.seq}` === `${lastStop}`) || routeStopList[0]
+      );
     } else {
       setSelectedRouteStop(routeStopList[0]);
     }
@@ -75,26 +78,43 @@ const QuickBusCheck = () => {
     init();
   }, []);
 
+  useEffect(() => {
+    console.log("selectedRouteStop", selectedRouteStop);
+  }, [selectedRouteStop]);
+
   const displayETA = () => {
     return (
       <div>
         {etaResult.length > 0 ? (
           etaResult.map((el) => {
+            console.log(el);
             return (
               <div>
-                <div>{moment(el.eta).format("HH:mm:ss")} ({moment(el.eta).diff(moment(),'minutes')})</div>
+                {el.eta ? (
+                  <div>
+                    {moment(el.eta).format("HH:mm:ss")} ({moment(el.eta).diff(moment(), "minutes")})
+                  </div>
+                ) : (
+                  <div>No ETA at the moment</div>
+                )}
+                <Typography variant="caption" display="block" gutterBottom>
+                  Last Update: {moment(el.data_timestamp).format("HH:mm:ss")}{" "}
+                </Typography>
               </div>
             );
           })
         ) : (
-          <div>No ETA at the moment</div>
+          <div>No service at the moment</div>
         )}
+        <Button color="primary" aria-label="refresh" onClick={fetchRouteEta}>
+          Refresh
+        </Button>
       </div>
     );
   };
 
   return (
-    <div>
+    <Stack spacing={2} style={{ paddingTop: "1em" }}>
       {routeList.length > 0 && selectedRoute && (
         <Autocomplete
           disablePortal
@@ -111,7 +131,7 @@ const QuickBusCheck = () => {
           getOptionLabel={(option) =>
             `${option.route} - ${option.orig_tc}->${option.dest_tc} (${option.bound}${option.service_type})`
           }
-          sx={{ width: 500 }}
+          sx={{ width: "90vw" }}
           renderInput={(params) => <TextField {...params} label="Route" />}
         />
       )}
@@ -126,12 +146,12 @@ const QuickBusCheck = () => {
           id="combo-box-demo"
           options={routeStopList}
           getOptionLabel={(option) => `${option.seq} - ${option.name_tc}`}
-          sx={{ width: 500 }}
+          sx={{ width: "90vw" }}
           renderInput={(params) => <TextField {...params} label="Stop" />}
         />
       )}
       {selectedRouteStop && routeEta.length > 0 && displayETA()}
-    </div>
+    </Stack>
   );
 };
 

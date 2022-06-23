@@ -12,6 +12,7 @@ import AppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack"
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 function App() {
@@ -37,7 +38,8 @@ function App() {
       <div className="App">
         <AppBar position="static">
           <Container maxWidth="xl">
-            <Toolbar disableGutters>
+            <Toolbar disableGutters style={{maxWidth:'100vw',overflow:"auto"}} >
+              <Stack direction="row" >
               <Button color="inherit" onClick={() => selectPage("SixNumber")}>
                 SixNumber
               </Button>
@@ -53,6 +55,7 @@ function App() {
               <Button color="inherit" onClick={() => selectPage("QuickBusCheck")}>
                 QuickBusCheck
               </Button>
+              </Stack>
             </Toolbar>
           </Container>
         </AppBar>
