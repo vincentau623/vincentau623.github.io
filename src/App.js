@@ -6,13 +6,16 @@ import SixNumber from "./containers/SixNumber";
 import BusChecker from "./containers/BusChecker";
 import CarparkInfo from "./containers/CarparkInfo";
 import MTRChecker from "./containers/MTRChecker";
-import QuickBusCheck from "./containers/QuickBusCheck"
+import QuickBusCheck from "./containers/QuickBusCheck";
+import PokerSim from "./containers/PokerSim";
+import Dataset from "./containers/Dataset";
+import HarbourPlace from "./containers/HarbourPlace";
 
 import AppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack"
+import Stack from "@mui/material/Stack";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 function App() {
@@ -38,23 +41,32 @@ function App() {
       <div className="App">
         <AppBar position="static">
           <Container maxWidth="xl">
-            <Toolbar disableGutters style={{maxWidth:'100vw',overflow:"auto"}} >
+            <Toolbar disableGutters style={{ maxWidth: '100vw', overflow: "auto" }} >
               <Stack direction="row" >
-              <Button color="inherit" onClick={() => selectPage("SixNumber")}>
-                SixNumber
-              </Button>
-              <Button color="inherit" onClick={() => selectPage("BusChecker")}>
-                BusChecker
-              </Button>
-              <Button color="inherit" onClick={() => selectPage("CarparkInfo")}>
-                CarparkInfo
-              </Button>
-              {/* <Button color="inherit" onClick={() => selectPage("MTRChecker")}>
+                <Button color="inherit" onClick={() => selectPage("SixNumber")}>
+                  SixNumber
+                </Button>
+                <Button color="inherit" onClick={() => selectPage("BusChecker")}>
+                  BusChecker
+                </Button>
+                <Button color="inherit" onClick={() => selectPage("CarparkInfo")}>
+                  CarparkInfo
+                </Button>
+                {/* <Button color="inherit" onClick={() => selectPage("MTRChecker")}>
                 MTRChecker
               </Button> */}
-              <Button color="inherit" onClick={() => selectPage("QuickBusCheck")}>
-                QuickBusCheck
-              </Button>
+                <Button color="inherit" onClick={() => selectPage("QuickBusCheck")}>
+                  QuickBusCheck
+                </Button>
+                {/* <Button color="inherit" onClick={() => selectPage("PokerSim")}>
+                  PokerSim
+                </Button>
+                <Button color="inherit" onClick={() => selectPage("Dataset")}>
+                  Dataset
+                </Button> */}
+                <Button color="inherit" onClick={() => selectPage("HarbourPlace")}>
+                  HarbourPlace
+                </Button>
               </Stack>
             </Toolbar>
           </Container>
@@ -64,7 +76,10 @@ function App() {
           {currentPage === "BusChecker" && <BusChecker />}
           {currentPage === "CarparkInfo" && <CarparkInfo />}
           {currentPage === "MTRChecker" && <MTRChecker />}
-          {currentPage === "QuickBusCheck" && <QuickBusCheck/>}
+          {currentPage === "QuickBusCheck" && <QuickBusCheck />}
+          {currentPage === "PokerSim" && <PokerSim />}
+          {currentPage === "Dataset" && <Dataset />}
+          {currentPage === "HarbourPlace" && <HarbourPlace />}
         </div>
       </div>
     </ThemeProvider>
