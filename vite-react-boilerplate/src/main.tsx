@@ -21,7 +21,9 @@ if (!rootElement.innerHTML) {
 	root.render(
 		<React.StrictMode>
 			<NextUIProvider>
-				<App router={router} />
+				<main className="dark text-foreground bg-background">
+					<App router={router} />
+				</main>
 			</NextUIProvider>
 		</React.StrictMode>
 	);
